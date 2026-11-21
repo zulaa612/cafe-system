@@ -34,7 +34,7 @@ export default function OnboardingPage() {
     setLoading(true);
 
     try {
-      const response = await fetch("/src/app/api/onboarding", {
+      const response = await fetch("api/onboarding", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -126,7 +126,7 @@ export default function OnboardingPage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder={user?.firstName ?? "Enter your name"}
-              className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder: text-white/40 focus:border-amber-300 focus:outline-none"
+              className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 placeholder: text-white/40 focus:border-amber-300 focus:outline-none"
             />
           </div>
 
