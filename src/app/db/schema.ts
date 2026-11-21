@@ -4,6 +4,8 @@ import {
   varchar,
   boolean,
   timestamp,
+  integer,
+  text,
 } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
@@ -20,6 +22,27 @@ export const users = pgTable("users", {
   createdAt: timestamp("created_at", {
     withTimezone: true,
   })
+    .defaultNow()
+    .notNull(),
+});
+
+export const products = pgTable("products", {
+  id: uuid("id").defaultRandom().primaryKey(),
+
+  name: varchar("name", { length: 150 }).notNull(),
+
+  price: integer("price").notNull(),
+
+  description: text("description"),
+
+  category: varchar("category", {
+    length: 100,
+  }).notNull(),
+  imageUrl: text("image_url"),
+
+  isAvailable: boolean("is_available").notNull().default(true),
+
+  createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
 });

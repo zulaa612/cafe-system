@@ -87,9 +87,9 @@ export default function OnboardingPage() {
     <main className="relative min-h-screen overflow-hidden bg-linear-to-br from-[#351200] via-[#c57a4f] to-[#2b1101] flex items-center justify-center p-5">
       <CoffeeBackground />
       {/*Card sc*/}
-      <div className="relative z-10 w-full max-w-lg rounded-3xl border border-white/15 bg-[#2B180F]/60 p-7 shadow-2xl backdrop-blur-xl md:p-10">
+      <div className="relative z-10 w-full max-w-md rounded-3xl border border-white/4 p-8 md:p-10 text-center backdrop-blur-md shadow-2xl">
         {/*Logo*/}
-        <div className="mb-5 flex flex-col items-center">
+        <div className="mb-5 flex flex-col  items-center">
           <div className="flex h-12 w-12 items-center justify-center rounded-full border border-amber-300/30 bg-amber-500/10 text-2xl">
             ☕
           </div>

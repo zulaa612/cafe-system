@@ -8,6 +8,13 @@
       "when": 1795274722930,
       "tag": "0000_lively_senator_kelly",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1795277205866,
+      "tag": "0001_cheerful_nextwave",
+      "breakpoints": true
     }
   ]
 }

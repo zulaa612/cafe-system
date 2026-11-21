@@ -54,7 +54,7 @@ export default function Home() {
 
             <Show when="signed-in">
               <Link
-                href="/dashboard"
+                href="/onboarding"
                 className="w-full rounded-full bg-linear-to-r from-[#a55f09] to-[#ffb55a] py-4 text-center font-medium text-white"
               >
                 Go to DashBoard
