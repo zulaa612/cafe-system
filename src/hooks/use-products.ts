@@ -15,13 +15,29 @@ export function useProducts() {
     setError("");
 
     try {
-      const res = await fetch("/api/admin/products", { cache: "no-store" });
+      const res = await fetch("/api/admin/products", {
+        cache: "no-store",
+      });
 
-      if (!res.ok) throw new Error("Failed to load products");
+      const contentType = res.headers.get("content-type");
 
-      setProducts(await res.json());
+      if (!contentType?.includes("application/json")) {
+        throw new Error(`API error: HTTP ${res.status}`);
+      }
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(
+          `${res.status}: ${data.error ?? "Failed to load products"}`,
+        );
+      }
+
+      setProducts(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error");
+      console.error("Products error:", err);
+
+      setError(err instanceof Error ? err.message : "Unknown error");
     } finally {
       setLoading(false);
     }

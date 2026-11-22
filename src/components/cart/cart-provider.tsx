@@ -69,8 +69,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         if (!key) return;
-        const saved = readCart(key);
-        setCart({ key, items: saved });
+
+        const timeout = setTimeout(() => {
+            setCart({
+                key,
+                items: readCart(key),
+            });
+        }, 0);
+
+        return () => clearTimeout(timeout);
     }, [key]);
 
     useEffect(() => {

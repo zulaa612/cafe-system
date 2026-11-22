@@ -78,6 +78,12 @@ export default function CartPage() {
                     >
                         Back to Menu
                     </Link>
+                    <Link
+                        href="/orders"
+                        className="rounded-xl bg-[#6d4936] px-6 py-3 text-white"
+                    >
+                        View My Orders
+                    </Link>
                 </div>
             </main>
         );

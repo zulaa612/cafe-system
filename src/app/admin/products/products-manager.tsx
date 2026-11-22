@@ -8,6 +8,7 @@ import ProductStats from "@/components/product-stats";
 import { emptyForm, type Product, type ProductFormData } from "@/types/product";
 import { CoffeeBackground } from "@/components/ui/CoffeeBackground";
 import { UserButton } from "@clerk/nextjs";
+import Link from "next/link";
 
 export default function ProductsManager() {
     const {
@@ -76,6 +77,12 @@ export default function ProductsManager() {
                             },
                         }}
                     />
+                    <Link
+                        href="/admin/orders"
+                        className="rounded-xl border border-[#e9ded4] px-4 py-3 text-sm font-medium text-[#6d4936]"
+                    >
+                        Orders
+                    </Link>
                 </header>
 
                 <ProductStats products={products} />

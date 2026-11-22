@@ -53,18 +53,42 @@ export const orderStatus = pgEnum("order_status", [
   "pending",
   "preparing",
   "ready",
+  "completed",
   "cancelled",
+]);
+
+export const paymentStatus = pgEnum("payment_status", [
+  "unpaid",
+  "pending",
+  "paid",
+  "failed",
+  "refunded",
 ]);
 
 export const orders = pgTable(
   "orders",
   {
     id: uuid("id").defaultRandom().primaryKey(),
+
     userId: uuid("user_id")
       .notNull()
       .references(() => users.id),
+
     status: orderStatus("status").notNull().default("pending"),
+
+    // Payment fields
+    paymentStatus: paymentStatus("payment_status").notNull().default("unpaid"),
+
+    wireIntentId: varchar("wire_intent_id", {
+      length: 255,
+    }).unique(),
+
+    paidAt: timestamp("paid_at", {
+      withTimezone: true,
+    }),
+
     totalAmount: integer("total_amount").notNull(),
+
     createdAt: timestamp("created_at", {
       withTimezone: true,
     })
@@ -93,3 +117,4 @@ export const orderItems = pgTable("order_items", {
 
   subtotal: integer("subtotal").notNull(),
 });
+

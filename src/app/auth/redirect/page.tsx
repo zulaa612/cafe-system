@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
 import { db } from "@/app/db";
 import { users } from "@/app/db/schema";
+import { CoffeeBackground } from "@/components/ui/CoffeeBackground";
 
 async function RedirectByRole() {
     const { userId } = await auth();
@@ -33,8 +34,11 @@ async function RedirectByRole() {
 
 export default function AuthRedirectPage() {
     return (
-        <Suspense fallback={<p className="p-10">Loading...</p>}>
-            <RedirectByRole />
-        </Suspense>
+        <div className="relative min-h-screen overflow-hidden bg-linear-to-br from-[#351200] via-[#c57a4f] to-[#2b1101] flex items-center justify-center p-5">
+            <CoffeeBackground />
+            <Suspense fallback={<p className="relative p-10">Loading...</p>}>
+                <RedirectByRole />
+            </Suspense>
+        </div>
     );
 }
