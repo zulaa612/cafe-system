@@ -47,6 +47,8 @@ export function CoffeeBean({ className, roast = "medium" }: CoffeeBeanProps) {
   const gradientId = useId();
 
   return (
+
+
     <svg
       viewBox="0 0 64 84"
       fill="none"
