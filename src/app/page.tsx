@@ -57,7 +57,7 @@ export default function Home() {
                 href="/onboarding"
                 className="w-full rounded-full bg-linear-to-r from-[#a55f09] to-[#ffb55a] py-4 text-center font-medium text-white"
               >
-                Go to DashBoard
+                Explore Menu
               </Link>
 
               <div className="flex items-center justify-center gap-3 text-center">

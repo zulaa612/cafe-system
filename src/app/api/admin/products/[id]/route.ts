@@ -78,7 +78,7 @@ export async function PATCH(request: Request, { params }: Context) {
           { status: 400 },
         );
       }
-      updates.description = body.description;
+      updates.description = body.description?.trim() || null;
     }
 
     if ("imageUrl" in body) {

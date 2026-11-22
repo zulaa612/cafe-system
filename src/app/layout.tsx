@@ -2,6 +2,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import "./global.css";
 import { Great_Vibes, Plus_Jakarta_Sans } from "next/font/google";
+import { CartProvider } from "@/components/cart/cart-provider";
 
 export const metadata: Metadata = {
   title: "Pinecone coffee house",
@@ -27,7 +28,8 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" className={`${greatVibes.variable} ${jakarta.variable}`}>
-        <body>{children}</body>
+        <body>
+          <CartProvider>{children}</CartProvider></body>
       </html>
     </ClerkProvider>
   );
