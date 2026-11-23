@@ -76,7 +76,6 @@ export const orders = pgTable(
 
     status: orderStatus("status").notNull().default("pending"),
 
-    // Payment fields
     paymentStatus: paymentStatus("payment_status").notNull().default("unpaid"),
 
     wireIntentId: varchar("wire_intent_id", {
@@ -117,4 +116,3 @@ export const orderItems = pgTable("order_items", {
 
   subtotal: integer("subtotal").notNull(),
 });
-
