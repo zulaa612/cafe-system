@@ -20,6 +20,7 @@ type Props = {
 const actionLabels: Partial<Record<OrderStatus, string>> = {
     pending: "Start Preparing",
     preparing: "Mark as Ready",
+    completed: "Completed",
     ready: "Complete Order",
 };
 
@@ -34,6 +35,7 @@ export default function OrderCard({
         pending: "bg-amber-100 text-amber-700",
         preparing: "bg-blue-100 text-blue-700",
         ready: "bg-green-100 text-green-700",
+        completed: "bg-yellow-100 text-red-700",
         cancelled: "bg-red-100 text-red-700",
     };
 
