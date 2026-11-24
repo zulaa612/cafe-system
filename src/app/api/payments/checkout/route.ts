@@ -122,7 +122,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ url: checkout.url });
   } catch (error) {
-    console.error("Create checkout:", error);
+    console.error("CHECKOUT FAILED:", error);
 
     return NextResponse.json(
       { error: "Failed to create checkout" },

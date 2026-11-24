@@ -27,7 +27,7 @@ async function RedirectByRole() {
         redirect("/menu");
     }
 
-    redirect("/onboarding");
+    redirect("/menu");
 
     return null;
 }

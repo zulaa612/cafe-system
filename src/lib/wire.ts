@@ -27,9 +27,19 @@ export async function wireRequest<T>(
   });
 
   if (!response.ok) {
-    const details = await response.text();
-    console.error("Wire API:", response.status, details);
-    throw new Error(`Wire API error: ${response.status}`);
+    const body = await response.json().catch(() => null);
+
+    const errorCode =
+      typeof body?.error?.code === "string" ? body.error.code : "unknown_error";
+
+    console.error("WIRE CHECKOUT ERROR:", {
+      endpoint: path,
+      status: response.status,
+      code: errorCode,
+      requestId: body?.error?.request_id ?? null,
+    });
+
+    throw new Error(`Wire API ${response.status}: ${errorCode}`);
   }
 
   return response.json() as Promise<T>;
