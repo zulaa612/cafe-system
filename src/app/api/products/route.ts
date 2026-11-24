@@ -2,8 +2,11 @@ import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/require-admin";
 import { db } from "@/app/db";
 import { products } from "@/app/db/schema";
+import { connection } from "next/server";
 
 export async function GET() {
+  await connection();
+  
   try {
     const access = await requireAdmin();
 

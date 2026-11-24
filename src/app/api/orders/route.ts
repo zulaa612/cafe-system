@@ -1,10 +1,11 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { desc, eq, inArray } from "drizzle-orm";
-
+import { eq, inArray } from "drizzle-orm";
+import { connection } from "next/server";
 import { db } from "@/app/db";
 import { users, products, orders, orderItems } from "@/app/db/schema";
 import type { CartItem } from "@/lib/order/types";
+import { requireAdmin } from "@/lib/require-admin";
 
 type OrderItemDraft = Omit<typeof orderItems.$inferInsert, "orderId">;
 
@@ -23,22 +24,19 @@ async function getCurrentUser() {
 }
 
 export async function GET() {
+  await connection();
+
   try {
-    const user = await getCurrentUser();
+    const access = await requireAdmin();
 
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!access.authorized) {
+      return NextResponse.json(
+        { error: "Access denied" },
+        { status: access.status },
+      );
     }
-
-    const data = await db
-      .select()
-      .from(orders)
-      .where(eq(orders.userId, user.id))
-      .orderBy(desc(orders.createdAt));
-
-    return NextResponse.json(data);
   } catch (error) {
-    console.error("GET orders:", error);
+    console.error("GET admin orders:", error);
 
     return NextResponse.json(
       { error: "Failed to load orders" },

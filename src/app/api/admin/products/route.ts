@@ -2,9 +2,12 @@ import { NextResponse } from "next/server";
 import { desc } from "drizzle-orm";
 import { db } from "@/app/db";
 import { products } from "@/app/db/schema";
+import { connection } from "next/server";
 import { requireAdmin } from "@/lib/require-admin";
 
 export async function GET() {
+  await connection();
+  
   try {
     const access = await requireAdmin();
 
