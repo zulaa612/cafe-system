@@ -50,7 +50,7 @@ export default function OnboardingPage() {
         throw new Error(data.error ?? "Error saving data.");
       }
 
-      router.replace("/menu");
+      router.replace("/auth/redirect");
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Please, try again.");

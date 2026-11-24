@@ -11,7 +11,7 @@ async function AdminProductsContent() {
             redirect("/sign-in");
         }
 
-        redirect("/dashboard");
+        redirect("/auth/redirect");
     }
 
     return <ProductsManager />;
