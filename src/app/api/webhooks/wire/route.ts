@@ -67,7 +67,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid event" }, { status: 400 });
     }
 
-    // Confirm payment directly with Wire.
     const intent = await wireRequest<{
       id: string;
       status: string;
