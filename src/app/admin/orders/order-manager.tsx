@@ -59,6 +59,11 @@ export default function OrdersManager() {
                         >
                             Products
                         </Link>
+                        <Link
+                            href="/admin/reports"
+                            className="text-sm font-medium text-white ">
+                            Reports
+                        </Link>
 
                         <UserButton />
                     </div>
