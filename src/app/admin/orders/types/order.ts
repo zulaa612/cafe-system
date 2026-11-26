@@ -5,6 +5,13 @@ export type OrderStatus =
   | "completed"
   | "cancelled";
 
+export type paymentStatus =
+  | "unpaid"
+  | "pending"
+  | "paid"
+  | "failed"
+  | "refunded";
+
 export type AdminOrderItem = {
   id: string;
   productName: string;

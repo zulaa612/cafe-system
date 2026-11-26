@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server";
+import { NextResponse, connection } from "next/server";
 import { desc, eq, inArray } from "drizzle-orm";
-import { connection } from "next/server";
+
 import { db } from "@/app/db";
 import { orders, orderItems, users } from "@/app/db/schema";
 import { requireAdmin } from "@/lib/require-admin";
@@ -22,6 +22,7 @@ export async function GET() {
       .select({
         id: orders.id,
         status: orders.status,
+        paymentStatus: orders.paymentStatus,
         totalAmount: orders.totalAmount,
         createdAt: orders.createdAt,
         customerName: users.name,
@@ -56,6 +57,7 @@ export async function GET() {
     const result = data.map((order) => ({
       id: order.id,
       status: order.status,
+      paymentStatus: order.paymentStatus,
       totalAmount: order.totalAmount,
       createdAt: order.createdAt.toISOString(),
 
