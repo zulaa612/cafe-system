@@ -37,17 +37,17 @@ export default function OrdersManager() {
     );
 
     return (
-        <main className="min-h-screen bg-[#faf7f2] px-5 py-10 text-[#3b2922]">
+        <main className="relative min-h-screen px-5 py-10 text-[#fffff]">
             <div className="mx-auto max-w-6xl space-y-8">
                 <header className="flex flex-wrap items-center justify-between gap-4">
                     <div>
-                        <p className="text-xs font-semibold tracking-widest text-[#a17b60]">
-                            PINECONE / ADMIN
+                        <p className="text-xs font-semibold tracking-widest text-[#ffffff]">
+                            PINECONE COFFEE HOUSE / ADMIN
                         </p>
-                        <h1 className="mt-2 text-3xl font-bold">
+                        <h1 className="mt-2 text-3xl font-bold text-[#ffffff]">
                             Orders
                         </h1>
-                        <p className="mt-2 text-sm text-gray-500">
+                        <p className="mt-2 text-sm text-white">
                             Manage customer orders
                         </p>
                     </div>
@@ -55,7 +55,7 @@ export default function OrdersManager() {
                     <div className="flex items-center gap-4">
                         <Link
                             href="/admin/products"
-                            className="text-sm font-medium text-[#6d4936]"
+                            className="text-sm font-medium text-white"
                         >
                             Products
                         </Link>

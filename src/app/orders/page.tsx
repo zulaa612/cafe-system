@@ -3,13 +3,22 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
+import PayNowButton from "@/components/pay-now-button";
 
 type Order = {
     id: string;
     status: string;
+    paymentStatus: PaymentStatus;
     totalAmount: number;
     createdAt: string;
 };
+
+type PaymentStatus =
+    | "unpaid"
+    | "pending"
+    | "paid"
+    | "failed"
+    | "refunded";
 
 export default function OrdersPage() {
     const [orders, setOrders] = useState<Order[]>([]);
@@ -87,6 +96,25 @@ export default function OrdersPage() {
                             <p className="mt-4 text-xl font-bold">
                                 {order.totalAmount.toLocaleString("mn-MN")}₮
                             </p>
+                            <div className="mt-4 flex items-center justify-between">
+                                <span
+                                    className={`rounded-full px-3 py-1 text-sm ${order.paymentStatus === "paid"
+                                        ? "bg-green-100 text-green-700"
+                                        : "bg-amber-100 text-amber-700"
+                                        }`}
+                                >
+                                    {order.paymentStatus === "paid"
+                                        ? "Paid"
+                                        : order.paymentStatus === "pending"
+                                            ? "Payment Pending"
+                                            : order.paymentStatus}
+                                </span>
+                            </div>
+
+                            {order.paymentStatus === "unpaid" &&
+                                order.status === "pending" && (
+                                    <PayNowButton orderId={order.id} />
+                                )}
                         </div>
                     ))}
                 </div>

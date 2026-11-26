@@ -1,7 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
 import { eq, inArray } from "drizzle-orm";
-import { connection } from "next/server";
+import { connection, NextResponse } from "next/server";
 import { db } from "@/app/db";
 import { users, products, orders, orderItems } from "@/app/db/schema";
 import type { CartItem } from "@/lib/order/types";

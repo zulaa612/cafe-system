@@ -1,7 +1,6 @@
 import crypto from "node:crypto";
 import { NextResponse } from "next/server";
-import { and, eq } from "drizzle-orm";
-
+import { and, eq, inArray } from "drizzle-orm";
 import { db } from "@/app/db";
 import { orders } from "@/app/db/schema";
 import { wireRequest } from "@/lib/wire";
@@ -41,6 +40,16 @@ function verifySignature(raw: string, header: string) {
   return crypto.timingSafeEqual(
     Buffer.from(expected, "hex"),
     Buffer.from(signature, "hex"),
+  );
+}
+
+export async function GET() {
+  return NextResponse.json(
+    {
+      ok: true,
+      message: "Wire webhook endpoint is reachable",
+    },
+    { status: 200 },
   );
 }
 
@@ -96,13 +105,46 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Payment mismatch" }, { status: 409 });
     }
 
-    await db
+    if (order.paymentStatus === "paid") {
+      console.log("Wire: order already paid", order.id);
+
+      return NextResponse.json({
+        received: true,
+        alreadyPaid: true,
+      });
+    }
+
+    const updated = await db
       .update(orders)
       .set({
         paymentStatus: "paid",
         paidAt: new Date(),
       })
-      .where(and(eq(orders.id, order.id), eq(orders.paymentStatus, "pending")));
+      .where(
+        and(
+          eq(orders.id, order.id),
+          eq(orders.wireIntentId, intent.id),
+          inArray(orders.paymentStatus, ["unpaid", "pending"]),
+        ),
+      )
+      .returning({ id: orders.id });
+
+    if (updated.length === 0) {
+      console.error("Wire: payment status update skipped", {
+        orderId: order.id,
+        paymentStatus: order.paymentStatus,
+      });
+
+      return NextResponse.json(
+        { error: "Order payment state conflict" },
+        { status: 500 },
+      );
+    }
+
+    console.log("WIRE PAYMENT SUCCESS:", {
+      orderId: order.id,
+      intentId: intent.id,
+    });
 
     return NextResponse.json({ received: true });
   } catch (error) {
