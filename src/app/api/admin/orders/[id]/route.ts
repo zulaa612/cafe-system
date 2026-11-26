@@ -55,7 +55,7 @@ export async function PATCH(request: Request, { params }: Context) {
     }
 
     const [currentOrder] = await db
-      .select({ status: orders.status })
+      .select({ status: orders.status, paymentStatus: orders.paymentStatus })
       .from(orders)
       .where(eq(orders.id, id))
       .limit(1);
@@ -65,6 +65,13 @@ export async function PATCH(request: Request, { params }: Context) {
     }
 
     const newStatus = status as Status;
+
+    if (newStatus === "preparing" && currentOrder.paymentStatus !== "paid") {
+      return NextResponse.json(
+        { error: "Payment must be confirmed first" },
+        { status: 409 },
+      );
+    }
 
     if (!transitions[currentOrder.status]?.includes(newStatus)) {
       return NextResponse.json(
@@ -76,7 +83,15 @@ export async function PATCH(request: Request, { params }: Context) {
     const [updated] = await db
       .update(orders)
       .set({ status: newStatus })
-      .where(and(eq(orders.id, id), eq(orders.status, currentOrder.status)))
+      .where(
+        and(
+          eq(orders.id, id),
+          eq(orders.status, currentOrder.status),
+          ...(newStatus === "preparing"
+            ? [eq(orders.paymentStatus, "paid")]
+            : []),
+        ),
+      )
       .returning();
 
     if (!updated) {
