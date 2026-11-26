@@ -6,8 +6,6 @@ import { db } from "@/app/db";
 import { orders } from "@/app/db/schema";
 import { wireRequest } from "@/lib/wire";
 
-export const runtime = "nodejs";
-
 type WireEvent = {
   id: string;
   type: string;
