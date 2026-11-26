@@ -1,41 +1,50 @@
-import { auth } from "@clerk/nextjs/server";
-import { eq, inArray } from "drizzle-orm";
 import { connection, NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
+import { desc, eq, inArray } from "drizzle-orm";
+
 import { db } from "@/app/db";
-import { users, products, orders, orderItems } from "@/app/db/schema";
-import type { CartItem } from "@/lib/order/types";
-import { requireAdmin } from "@/lib/require-admin";
+import { users, orders, products, orderItems } from "@/app/db/schema";
 
-type OrderItemDraft = Omit<typeof orderItems.$inferInsert, "orderId">;
-
-async function getCurrentUser() {
-  const { userId } = await auth();
-
-  if (!userId) return null;
-
-  const [user] = await db
-    .select()
-    .from(users)
-    .where(eq(users.clerkId, userId))
-    .limit(1);
-
-  return user ?? null;
-}
+type CartItem = {
+  productId: string;
+  quantity: number;
+};
 
 export async function GET() {
   await connection();
 
   try {
-    const access = await requireAdmin();
+    const { userId } = await auth();
 
-    if (!access.authorized) {
-      return NextResponse.json(
-        { error: "Access denied" },
-        { status: access.status },
-      );
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    const [user] = await db
+      .select({ id: users.id })
+      .from(users)
+      .where(eq(users.clerkId, userId))
+      .limit(1);
+
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    const data = await db
+      .select({
+        id: orders.id,
+        status: orders.status,
+        paymentStatus: orders.paymentStatus,
+        totalAmount: orders.totalAmount,
+        createdAt: orders.createdAt,
+      })
+      .from(orders)
+      .where(eq(orders.userId, user.id))
+      .orderBy(desc(orders.createdAt));
+
+    return NextResponse.json(data);
   } catch (error) {
-    console.error("GET admin orders:", error);
+    console.error("GET orders:", error);
 
     return NextResponse.json(
       { error: "Failed to load orders" },
@@ -45,11 +54,23 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  await connection();
+
   try {
-    const user = await getCurrentUser();
+    const { userId } = await auth();
+
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const [user] = await db
+      .select({ id: users.id })
+      .from(users)
+      .where(eq(users.clerkId, userId))
+      .limit(1);
 
     if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     const body = await request.json().catch(() => null);
@@ -59,7 +80,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid cart" }, { status: 400 });
     }
 
-    const validItems: CartItem[] = [];
+    const cart: CartItem[] = [];
 
     for (const item of items) {
       if (
@@ -78,13 +99,13 @@ export async function POST(request: Request) {
         );
       }
 
-      validItems.push({
+      cart.push({
         productId: item.productId,
         quantity: item.quantity,
       });
     }
 
-    const ids = validItems.map((item) => item.productId);
+    const ids = cart.map((item) => item.productId);
 
     if (new Set(ids).size !== ids.length) {
       return NextResponse.json(
@@ -93,18 +114,16 @@ export async function POST(request: Request) {
       );
     }
 
-    const availableProducts = await db
+    const foundProducts = await db
       .select()
       .from(products)
       .where(inArray(products.id, ids));
 
     const productMap = new Map(
-      availableProducts.map((product) => [product.id, product]),
+      foundProducts.map((product) => [product.id, product]),
     );
 
-    const lineItems: OrderItemDraft[] = [];
-
-    for (const item of validItems) {
+    const lineItems = cart.map((item) => {
       const product = productMap.get(item.productId);
 
       if (
@@ -113,36 +132,25 @@ export async function POST(request: Request) {
         !Number.isSafeInteger(product.price) ||
         product.price <= 0
       ) {
-        return NextResponse.json(
-          { error: "Product unavailable" },
-          { status: 400 },
-        );
+        throw new Error("Product unavailable");
       }
 
-      const subtotal = product.price * item.quantity;
-
-      if (!Number.isSafeInteger(subtotal)) {
-        return NextResponse.json(
-          { error: "Invalid order amount" },
-          { status: 400 },
-        );
-      }
-
-      lineItems.push({
+      return {
         productId: product.id,
         productName: product.name,
         quantity: item.quantity,
         unitPrice: product.price,
-        subtotal,
-      });
-    }
+        subtotal: product.price * item.quantity,
+      };
+    });
 
     const totalAmount = lineItems.reduce((sum, item) => sum + item.subtotal, 0);
 
     if (
       !Number.isSafeInteger(totalAmount) ||
       totalAmount <= 0 ||
-      totalAmount > 2147483647
+      totalAmount > 2147483647 ||
+      lineItems.some((item) => !Number.isSafeInteger(item.subtotal))
     ) {
       return NextResponse.json(
         { error: "Invalid total amount" },
@@ -155,8 +163,9 @@ export async function POST(request: Request) {
         .insert(orders)
         .values({
           userId: user.id,
-          totalAmount,
           status: "pending",
+          paymentStatus: "unpaid",
+          totalAmount,
         })
         .returning();
 
