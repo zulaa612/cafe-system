@@ -7,9 +7,16 @@ import {
     XCircle,
 } from "lucide-react";
 
-import type { AdminOrder, OrderStatus } from "@/app/admin/orders/types/order";
+import type {
+    AdminOrder,
+    OrderStatus,
+    PaymentStatus,
+} from "@/app/admin/orders/types/order";
 
-import { nextStatus, statusLabels } from "@/app/admin/orders/types/order";
+import {
+    nextStatus,
+    statusLabels,
+} from "@/app/admin/orders/types/order";
 
 type Props = {
     order: AdminOrder;
@@ -17,10 +24,33 @@ type Props = {
     onUpdate: (id: string, status: OrderStatus) => void;
 };
 
+const statusColors: Record<OrderStatus, string> = {
+    pending: "bg-amber-100 text-amber-700",
+    preparing: "bg-blue-100 text-blue-700",
+    ready: "bg-green-100 text-green-700",
+    completed: "bg-green-100 text-green-700",
+    cancelled: "bg-red-100 text-red-700",
+};
+
+const paymentColors: Record<PaymentStatus, string> = {
+    unpaid: "bg-red-100 text-red-700",
+    pending: "bg-amber-100 text-amber-700",
+    paid: "bg-green-100 text-green-700",
+    failed: "bg-red-100 text-red-700",
+    refunded: "bg-gray-100 text-gray-700",
+};
+
+const paymentLabels: Record<PaymentStatus, string> = {
+    unpaid: "Unpaid",
+    pending: "Payment Pending",
+    paid: "Paid",
+    failed: "Payment Failed",
+    refunded: "Refunded",
+};
+
 const actionLabels: Partial<Record<OrderStatus, string>> = {
     pending: "Start Preparing",
     preparing: "Mark as Ready",
-    completed: "Completed",
     ready: "Complete Order",
 };
 
@@ -30,17 +60,10 @@ export default function OrderCard({
     onUpdate,
 }: Props) {
     const next = nextStatus[order.status];
-
-    const statusColors: Record<OrderStatus, string> = {
-        pending: "bg-amber-100 text-amber-700",
-        preparing: "bg-blue-100 text-blue-700",
-        ready: "bg-green-100 text-green-700",
-        completed: "bg-yellow-100 text-red-700",
-        cancelled: "bg-red-100 text-red-700",
-    };
+    const isPaid = order.paymentStatus === "paid";
 
     return (
-        <article className="rounded-2xl border border-[#eee5dc] bg-white p-5">
+        <article className="rounded-2xl border border-[#eee5dc] bg-white p-5 text-[#3b2922]">
             <header className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                     <h2 className="font-bold">
@@ -52,10 +75,9 @@ export default function OrderCard({
                     </p>
 
                     <p className="mt-1 text-xs text-gray-400">
-                        {new Date(order.createdAt).toLocaleString(
-                            "mn-MN",
-                            { timeZone: "Asia/Ulaanbaatar" }
-                        )}
+                        {new Date(order.createdAt).toLocaleString("mn-MN", {
+                            timeZone: "Asia/Ulaanbaatar",
+                        })}
                     </p>
                 </div>
 
@@ -78,6 +100,7 @@ export default function OrderCard({
                         <span>
                             {item.productName} × {item.quantity}
                         </span>
+
                         <span className="font-medium">
                             {item.subtotal.toLocaleString("mn-MN")}₮
                         </span>
@@ -87,19 +110,50 @@ export default function OrderCard({
 
             <div className="my-5 border-t border-[#eee5dc]" />
 
-            <div className="flex justify-between">
+            <div className="flex items-center justify-between">
                 <span className="font-semibold">Total</span>
+
                 <span className="text-xl font-bold">
                     {order.totalAmount.toLocaleString("mn-MN")}₮
                 </span>
             </div>
 
+            {/* Order болон Payment Status */}
+            <div className="mt-5 space-y-3 rounded-xl bg-[#faf7f2] p-4">
+                <div className="flex items-center justify-between gap-3">
+                    <span className="text-sm text-gray-600">
+                        Order Status
+                    </span>
+
+                    <span
+                        className={`rounded-full px-3 py-1 text-xs font-semibold ${statusColors[order.status]
+                            }`}
+                    >
+                        {statusLabels[order.status]}
+                    </span>
+                </div>
+
+                <div className="flex items-center justify-between gap-3">
+                    <span className="text-sm text-gray-600">
+                        Payment Status
+                    </span>
+
+                    <span
+                        className={`rounded-full px-3 py-1 text-xs font-semibold ${paymentColors[order.paymentStatus]
+                            }`}
+                    >
+                        {paymentLabels[order.paymentStatus]}
+                    </span>
+                </div>
+            </div>
+
+            {/* Захиалгын үйлдлүүд */}
             <div className="mt-5 flex flex-wrap gap-3">
                 {next && (
                     <button
-                        disabled={busy}
+                        disabled={busy || !isPaid}
                         onClick={() => onUpdate(order.id, next)}
-                        className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#6d4936] px-4 py-3 text-sm font-semibold text-white disabled:opacity-50"
+                        className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#6d4936] px-4 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
                     >
                         {order.status === "pending" ? (
                             <ChefHat size={17} />
@@ -109,7 +163,9 @@ export default function OrderCard({
                             <CheckCircle2 size={17} />
                         )}
 
-                        {busy ? "Updating..." : actionLabels[order.status]}
+                        {busy
+                            ? "Updating..."
+                            : actionLabels[order.status]}
                     </button>
                 )}
 
@@ -128,6 +184,12 @@ export default function OrderCard({
                     </button>
                 )}
             </div>
+
+            {!isPaid && next && (
+                <p className="mt-3 text-xs text-amber-700">
+                    Payment must be confirmed before preparing this order.
+                </p>
+            )}
         </article>
     );
 }

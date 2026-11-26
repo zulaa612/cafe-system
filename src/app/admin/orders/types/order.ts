@@ -5,7 +5,7 @@ export type OrderStatus =
   | "completed"
   | "cancelled";
 
-export type paymentStatus =
+export type PaymentStatus =
   | "unpaid"
   | "pending"
   | "paid"
@@ -23,18 +23,22 @@ export type AdminOrderItem = {
 export type AdminOrder = {
   id: string;
   status: OrderStatus;
+  paymentStatus: PaymentStatus;
   totalAmount: number;
   createdAt: string;
+
   customer: {
     name: string;
     phone: string;
   };
+
   items: AdminOrderItem[];
 };
 
 export const nextStatus: Partial<Record<OrderStatus, OrderStatus>> = {
   pending: "preparing",
   preparing: "ready",
+  ready: "completed",
 };
 
 export const statusLabels: Record<OrderStatus, string> = {
