@@ -13,7 +13,7 @@ export default function SalesReportPage() {
         useSalesReport();
 
     return (
-        <main className="min-h-screen p-6 text-[#3b2922] md:p-10">
+        <main className="relative min-h-screen w-full overflow-x-hidden bg-linear-to-br from-[#351200] via-[#c57a4f] to-[#2b1101] px-4 py-6 text-[#3b2922] sm:px-6 md:p-10" >
             <CoffeeBackground />
             <div className="relative mx-auto max-w-6xl space-y-8">
                 <ReportHeader />

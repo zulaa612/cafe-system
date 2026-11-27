@@ -63,13 +63,19 @@ export default function ProductsManager() {
             <CoffeeBackground />
             <div className=" relative mx-auto max-w-6xl space-y-8">
                 <header className="flex items-center justify-between">
-                    <h1 className="text-3xl font-bold">Products</h1>
+                    <h1 className="text-3xl font-bold text-white">Products</h1>
                     <button
                         onClick={openCreate}
-                        className="rounded-xl bg-[#6d4936] px-5 py-3 text-white"
+                        className="rounded-xl bg-[#6d4936] px-5 py-3 text-white hover:bg-[#351200]"
                     >
                         + Add Product
                     </button>
+                    <Link
+                        href="/admin/orders"
+                        className="rounded-xl bg-[#351200] px-4 py-3 text-sm font-medium text-white hover:bg-[#6d4936]"
+                    >
+                        Orders
+                    </Link>
                     <UserButton
                         appearance={{
                             elements: {
@@ -77,12 +83,6 @@ export default function ProductsManager() {
                             },
                         }}
                     />
-                    <Link
-                        href="/admin/orders"
-                        className="rounded-xl border border-[#e9ded4] px-4 py-3 text-sm font-medium text-[#6d4936]"
-                    >
-                        Orders
-                    </Link>
                 </header>
 
                 <ProductStats products={products} />
@@ -91,7 +91,7 @@ export default function ProductsManager() {
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     placeholder="Search products..."
-                    className="w-full rounded-xl border bg-white px-4 py-3"
+                    className=" w-full rounded-2xl border backdrop-blur-md md:p-10 border-white/40 p-3 shadow-2xl text-white"
                 />
 
                 {error && (

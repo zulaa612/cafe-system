@@ -26,7 +26,7 @@ export default function OrderStats({
             {stats.map((stat) => (
                 <div
                     key={stat.label}
-                    className="relative z-10 w-full rounded-2xl border backdrop-blur-md md:p-10 border-white/40 bg-[#] p-5 shadow-2xl"
+                    className="relative z-10 w-full rounded-2xl border backdrop-blur-md md:p-10 border-white/40 p-5 shadow-2xl"
                 >
                     <p className="text-sm text-white">{stat.label}</p>
                     <p className="mt-2 text-3xl font-bold text-white">

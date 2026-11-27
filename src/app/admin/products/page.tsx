@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/require-admin";
 import ProductsManager from "./products-manager";
+import { CoffeeBackground } from "@/components/ui/CoffeeBackground";
 
 async function AdminProductsContent() {
     const access = await requireAdmin();
@@ -27,7 +28,8 @@ export default function AdminProductsPage() {
 
 function AdminLoading() {
     return (
-        <main className="min-h-screen bg-[#faf7f2] p-10">
+        <main className="relative min-h-screen overflow-hidden bg-linear-to-br from-[#351200] via-[#c57a4f] to-[#2b1101] flex items-center justify-center p-5">
+            <CoffeeBackground />
             <div className="mx-auto max-w-6xl animate-pulse space-y-6">
                 <div className="h-10 w-56 rounded-xl bg-gray-200" />
                 <div className="grid grid-cols-3 gap-4">

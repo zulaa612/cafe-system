@@ -63,18 +63,18 @@ export default function OrderCard({
     const isPaid = order.paymentStatus === "paid";
 
     return (
-        <article className="rounded-2xl border border-[#eee5dc] bg-white p-5 text-[#3b2922]">
+        <article className="relative z-10 w-full rounded-2xl border backdrop-blur-md md:p-10 border-white/40 p-5 shadow-2xl">
             <header className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                    <h2 className="font-bold">
+                    <h2 className="font-bold text-white">
                         Order #{order.id.slice(0, 8).toUpperCase()}
                     </h2>
 
-                    <p className="mt-1 text-sm text-gray-500">
+                    <p className="mt-1 text-sm text-white">
                         {order.customer.name} · {order.customer.phone}
                     </p>
 
-                    <p className="mt-1 text-xs text-gray-400">
+                    <p className="mt-1 text-xs text-white">
                         {new Date(order.createdAt).toLocaleString("mn-MN", {
                             timeZone: "Asia/Ulaanbaatar",
                         })}
@@ -95,13 +95,13 @@ export default function OrderCard({
                 {order.items.map((item) => (
                     <div
                         key={item.id}
-                        className="flex justify-between gap-3 text-sm"
+                        className="flex justify-between gap-3 text-sm text-white"
                     >
                         <span>
                             {item.productName} × {item.quantity}
                         </span>
 
-                        <span className="font-medium">
+                        <span className="font-medium text-white">
                             {item.subtotal.toLocaleString("mn-MN")}₮
                         </span>
                     </div>
@@ -111,14 +111,13 @@ export default function OrderCard({
             <div className="my-5 border-t border-[#eee5dc]" />
 
             <div className="flex items-center justify-between">
-                <span className="font-semibold">Total</span>
+                <span className="font-semibold text-white">Total</span>
 
                 <span className="text-xl font-bold">
                     {order.totalAmount.toLocaleString("mn-MN")}₮
                 </span>
             </div>
 
-            {/* Order болон Payment Status */}
             <div className="mt-5 space-y-3 rounded-xl bg-[#faf7f2] p-4">
                 <div className="flex items-center justify-between gap-3">
                     <span className="text-sm text-gray-600">

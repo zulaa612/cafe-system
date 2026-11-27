@@ -14,7 +14,7 @@ export default function ProductCard({
     onToggle,
 }: Props) {
     return (
-        <article className="flex gap-4 rounded-2xl border bg-white p-4">
+        <article className="flex gap-4 rounded-2xl border p-4 backdrop-blur-md md:p-10 border-white/40 shadow-2xl text-white ">
             <div className="h-28 w-28 shrink-0 overflow-hidden rounded-xl bg-[#eee5dc]">
                 {product.imageUrl ? (
                     <img
@@ -30,7 +30,7 @@ export default function ProductCard({
             </div>
 
             <div className="min-w-0 flex-1">
-                <p className="text-xs text-[#a17b60]">{product.category}</p>
+                <p className="text-s text-white">{product.category}</p>
                 <h2 className="mt-1 truncate font-semibold">{product.name}</h2>
                 <p className="mt-1 font-bold">
                     {product.price.toLocaleString("mn-MN")}₮
@@ -43,7 +43,7 @@ export default function ProductCard({
                 <div className="mt-3 flex gap-3 text-sm">
                     <button
                         onClick={() => onEdit(product)}
-                        className="font-semibold text-[#6d4936]"
+                        className="font-semibold text-gray-200"
                     >
                         Edit
                     </button>
@@ -51,7 +51,7 @@ export default function ProductCard({
                     <button
                         onClick={() => onToggle(product)}
                         disabled={busy}
-                        className="text-gray-600 disabled:opacity-50"
+                        className="text-gray-300 disabled:opacity-50"
                     >
                         {busy
                             ? "Saving..."
