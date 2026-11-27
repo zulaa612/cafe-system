@@ -67,7 +67,7 @@ export default function RevenueChart({
     }
 
     return (
-        <section className="rounded-2xl border border-[#eee5dc] bg-white p-6 shadow-sm">
+        <section className="rounded-2xl border border-[#eee5dc] p-6 shadow-sm">
             <h2 className="text-xl font-bold">Revenue Trend</h2>
 
             <p className="mt-1 text-sm text-gray-500">

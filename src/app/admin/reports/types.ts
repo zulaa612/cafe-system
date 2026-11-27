@@ -5,6 +5,12 @@ export type TrendItem = {
   revenue: number;
 };
 
+export type TopProduct = {
+  productName: string;
+  quantity: number;
+  revenue: number;
+};
+
 export type Report = {
   period: Period;
   totalRevenue: number;
@@ -12,6 +18,7 @@ export type Report = {
   awaitingPayment: number;
   averageOrder: number;
   trend: TrendItem[];
+  topProducts: TopProduct[];
 };
 
 export const formatMoney = (value: number) =>
