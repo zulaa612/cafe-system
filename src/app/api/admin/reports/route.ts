@@ -85,22 +85,26 @@ export async function GET(request: Request) {
       })
       .from(orders);
 
-    const granularity =
-      period === "today" ? "hour" : period === "all" ? "month" : "day";
+    const bucket =
+      period === "today"
+        ? sql`date_trunc('hour', ${paidDate})`
+        : period === "all"
+          ? sql`date_trunc('month', ${paidDate})`
+          : sql`date_trunc('day', ${paidDate})`;
 
     const format =
-      period === "today" ? "HH24" : period === "all" ? "YYYY-MM" : "YYYY-MM-DD";
-
-    const bucket = sql`
-      date_trunc(${granularity}, ${paidDate})
-    `;
+      period === "today"
+        ? sql`'HH24'`
+        : period === "all"
+          ? sql`'YYYY-MM'`
+          : sql`'YYYY-MM-DD'`;
 
     const trend = await db
       .select({
         label: sql<string>`to_char(${bucket}, ${format})`,
         revenue: sql<string>`
-          SUM(${orders.totalAmount})::text
-        `,
+      SUM(${orders.totalAmount})::text
+    `,
       })
       .from(orders)
       .where(paidFilter)
