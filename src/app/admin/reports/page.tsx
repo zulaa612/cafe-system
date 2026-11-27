@@ -1,10 +1,10 @@
 "use client";
 
 import { useSalesReport } from "../hooks/use-sales-report";
-import ReportHeader from "@/components/report-header";
-import PeriodFilter from "@/components/period-filter";
-import SalesStats from "@/components/sales-stats";
-import RevenueChart from "@/components/revenue-chart";
+import ReportHeader from "@/components/report/report-header";
+import PeriodFilter from "@/components/report/period-filter";
+import SalesStats from "@/components/report/sales-stats";
+import RevenueChart from "@/components/report/revenue-chart";
 import { CoffeeBackground } from "@/components/ui/CoffeeBackground";
 
 export default function SalesReportPage() {

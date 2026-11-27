@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
-import PayNowButton from "@/components/pay-now-button";
+import PayNowButton from "@/components/cart/pay-now-button";
 
 type Order = {
     id: string;

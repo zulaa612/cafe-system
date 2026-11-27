@@ -5,8 +5,8 @@ import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
 import { RefreshCw } from "lucide-react";
 import { useOrders } from "./hooks/use-orders";
-import OrderCard from "@/components/order-card";
-import OrderStats from "@/components/order-stats";
+import OrderCard from "@/components/order/order-card";
+import OrderStats from "@/components/order/order-stats";
 import type { OrderStatus } from "./types/order";
 
 type Filter = "all" | OrderStatus;

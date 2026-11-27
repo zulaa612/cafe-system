@@ -2,9 +2,9 @@
 
 import { useState, type FormEvent } from "react";
 import { useProducts } from "@/hooks/use-products";
-import ProductCard from "@/components/product-card";
-import ProductForm from "@/components/product-form";
-import ProductStats from "@/components/product-stats";
+import ProductCard from "@/components/product/product-card";
+import ProductForm from "@/components/report/product-form";
+import ProductStats from "@/components/product/product-stats";
 import { emptyForm, type Product, type ProductFormData } from "@/types/product";
 import { CoffeeBackground } from "@/components/ui/CoffeeBackground";
 import { UserButton } from "@clerk/nextjs";

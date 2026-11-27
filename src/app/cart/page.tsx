@@ -2,7 +2,7 @@
 
 import { useCheckout } from "./hooks/use-checkout";
 import CartContent from "@/components/cart/cart-content";
-import OrderSuccess from "@/components/order-success";
+import OrderSuccess from "@/components/order/order-success";
 
 export default function CartPage() {
     const checkout = useCheckout();
