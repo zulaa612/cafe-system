@@ -6,6 +6,7 @@ import PeriodFilter from "@/components/report/period-filter";
 import SalesStats from "@/components/report/sales-stats";
 import RevenueChart from "@/components/report/revenue-chart";
 import { CoffeeBackground } from "@/components/ui/CoffeeBackground";
+import ExportReport from "@/components/report/export-report";
 
 export default function SalesReportPage() {
     const { period, setPeriod, report, error, refresh } =
@@ -21,6 +22,9 @@ export default function SalesReportPage() {
                     onChange={setPeriod}
                     onRefresh={refresh}
                 />
+                <div className="flex justify-end">
+                    <ExportReport report={report} />
+                </div>
 
                 {error && <p className="text-red-600">{error}</p>}
                 {report && !error && (
