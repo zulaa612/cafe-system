@@ -6,7 +6,6 @@ import PeriodFilter from "@/components/report/period-filter";
 import SalesStats from "@/components/report/sales-stats";
 import RevenueChart from "@/components/report/revenue-chart";
 import { CoffeeBackground } from "@/components/ui/CoffeeBackground";
-import TopProducts from "@/components/product/top-ptoducts";
 
 export default function SalesReportPage() {
     const { period, setPeriod, report, error, refresh } =
@@ -28,7 +27,6 @@ export default function SalesReportPage() {
                     <>
                         <SalesStats report={report} />
                         <RevenueChart report={report} />
-                        <TopProducts products={report.topProducts} />
                     </>
                 )}
             </div>

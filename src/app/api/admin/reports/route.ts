@@ -1,8 +1,7 @@
 import { connection, NextResponse } from "next/server";
-import { sql, type SQL, eq } from "drizzle-orm";
-
+import { sql, type SQL } from "drizzle-orm";
 import { db } from "@/app/db";
-import { orders, orderItems } from "@/app/db/schema";
+import { orders } from "@/app/db/schema";
 import { requireAdmin } from "@/lib/require-admin";
 
 type Period = "today" | "week" | "month" | "all";
@@ -110,23 +109,6 @@ export async function GET(request: Request) {
       .where(paidFilter)
       .groupBy(bucket)
       .orderBy(bucket);
-
-    const topProducts = await db
-      .select({
-        productName: orderItems.productName,
-        quantity: sql<string>`
-      SUM(${orderItems.quantity})::text
-    `,
-        revenue: sql<string>`
-      SUM(${orderItems.subtotal})::text
-    `,
-      })
-      .from(orderItems)
-      .innerJoin(orders, eq(orderItems.orderId, orders.id))
-      .where(paidFilter)
-      .groupBy(orderItems.productId, orderItems.productName)
-      .orderBy(sql`SUM(${orderItems.quantity}) DESC`)
-      .limit(5);
 
     const totalRevenue = Number(summary.revenue);
     const paidOrders = summary.paidOrders;
