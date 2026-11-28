@@ -44,14 +44,24 @@ export async function GET() {
       .innerJoin(users, eq(orders.userId, users.id))
       .where(
         sql`
-    (${orders.createdAt} AT TIME ZONE 'Asia/Ulaanbaatar')::date
-    =
-    (NOW() AT TIME ZONE 'Asia/Ulaanbaatar')::date
+    ${orders.createdAt} >= (
+      (date_trunc(
+        'day',
+        NOW() AT TIME ZONE 'Asia/Ulaanbaatar'
+      )) AT TIME ZONE 'Asia/Ulaanbaatar'
+    )
+    AND
+    ${orders.createdAt} < (
+      (date_trunc(
+        'day',
+        NOW() AT TIME ZONE 'Asia/Ulaanbaatar'
+      ) + INTERVAL '1 day') AT TIME ZONE 'Asia/Ulaanbaatar'
+    )
   `,
       )
       .orderBy(desc(orders.createdAt))
       .limit(100);
-
+      
     return NextResponse.json(data);
   } catch (error) {
     console.error("GET orders:", error);

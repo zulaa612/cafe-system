@@ -32,8 +32,26 @@ export default function OrdersManager() {
 
     const [filter, setFilter] = useState<Filter>("all");
 
-    const filteredOrders = orders.filter(
-        (order) => filter === "all" || order.status === filter
+    const today = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Ulaanbaatar",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+    }).format(new Date());
+
+    const todayOrders = orders.filter((order) => {
+        const orderDate = new Intl.DateTimeFormat("en-CA", {
+            timeZone: "Asia/Ulaanbaatar",
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+        }).format(new Date(order.createdAt));
+
+        return orderDate === today;
+    });
+
+    const filteredOrders = todayOrders.filter(
+        (order) => filter === "all" || order.status === filter,
     );
 
     return (
@@ -69,7 +87,7 @@ export default function OrdersManager() {
                     </div>
                 </header>
 
-                <OrderStats orders={orders} />
+                <OrderStats orders={todayOrders} />
 
                 <div className="flex flex-wrap items-center justify-between gap-4">
                     <div className="flex flex-wrap gap-2">
