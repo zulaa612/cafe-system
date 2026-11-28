@@ -60,7 +60,7 @@ export default function RevenueChart({
 
     if (points.length === 0) {
         return (
-            <p className="py-12 text-center text-gray-500">
+            <p className="py-12 text-center text-white">
                 No sales data yet.
             </p>
         );
@@ -70,7 +70,7 @@ export default function RevenueChart({
         <section className="rounded-2xl border border-[#eee5dc] p-6 shadow-sm">
             <h2 className="text-xl font-bold">Revenue Trend</h2>
 
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-white">
                 {report.period === "today"
                     ? "Hourly revenue"
                     : report.period === "all"
@@ -88,7 +88,7 @@ export default function RevenueChart({
                         >
                             <div className="flex h-44 w-full items-end justify-center">
                                 <div
-                                    className="w-7 rounded-t-md bg-[#a36b4d]"
+                                    className="w-7 rounded-t-md bg-[#ffffff]"
                                     style={{
                                         height:
                                             point.revenue === 0
@@ -101,7 +101,7 @@ export default function RevenueChart({
                                 />
                             </div>
 
-                            <span className="h-4 text-[10px] text-gray-500">
+                            <span className="h-4 text-[10px] text-white">
                                 {report.period === "month" && index % 4 !== 0
                                     ? ""
                                     : report.period === "today" && index % 3 !== 0

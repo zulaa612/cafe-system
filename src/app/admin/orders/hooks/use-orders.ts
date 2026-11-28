@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { AdminOrder, OrderStatus } from "../types/order";
 
 export function useOrders() {
@@ -9,9 +9,14 @@ export function useOrders() {
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState("");
 
-  const loadOrders = useCallback(async () => {
-    setLoading(true);
-    setError("");
+  const fetching = useRef(false);
+
+  const loadOrders = useCallback(async (silent = false) => {
+    if (fetching.current) return;
+
+    fetching.current = true;
+
+    if (!silent) setLoading(true);
 
     try {
       const res = await fetch("/api/admin/orders", {
@@ -21,9 +26,7 @@ export function useOrders() {
       const contentType = res.headers.get("content-type");
 
       if (!contentType?.includes("application/json")) {
-        throw new Error(
-          `API returned HTML instead of JSON (HTTP ${res.status})`,
-        );
+        throw new Error(`API returned HTTP ${res.status}`);
       }
 
       const data = await res.json();
@@ -35,10 +38,12 @@ export function useOrders() {
       }
 
       setOrders(data);
+      setError("");
     } catch (err) {
       console.error("Load orders error:", err);
       setError(err instanceof Error ? err.message : "Unknown error");
     } finally {
+      fetching.current = false;
       setLoading(false);
     }
   }, []);
@@ -47,11 +52,18 @@ export function useOrders() {
     let active = true;
 
     Promise.resolve().then(() => {
-      if (active) void loadOrders();
+      if (active) {
+        void loadOrders();
+      }
     });
+
+    const interval = setInterval(() => {
+      void loadOrders(true);
+    }, 60_000);
 
     return () => {
       active = false;
+      clearInterval(interval);
     };
   }, [loadOrders]);
 
@@ -68,12 +80,13 @@ export function useOrders() {
         body: JSON.stringify({ status }),
       });
 
+      const data = await res.json();
+
       if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
         throw new Error(data.error ?? "Failed to update status");
       }
 
-      await loadOrders();
+      await loadOrders(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error");
     } finally {

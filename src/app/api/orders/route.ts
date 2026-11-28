@@ -1,6 +1,6 @@
 import { connection, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import { desc, eq, inArray } from "drizzle-orm";
+import { desc, eq, inArray, sql } from "drizzle-orm";
 
 import { db } from "@/app/db";
 import { users, orders, products, orderItems } from "@/app/db/schema";
@@ -37,10 +37,20 @@ export async function GET() {
         paymentStatus: orders.paymentStatus,
         totalAmount: orders.totalAmount,
         createdAt: orders.createdAt,
+        customerName: users.name,
+        customerPhone: users.phone,
       })
       .from(orders)
-      .where(eq(orders.userId, user.id))
-      .orderBy(desc(orders.createdAt));
+      .innerJoin(users, eq(orders.userId, users.id))
+      .where(
+        sql`
+    (${orders.createdAt} AT TIME ZONE 'Asia/Ulaanbaatar')::date
+    =
+    (NOW() AT TIME ZONE 'Asia/Ulaanbaatar')::date
+  `,
+      )
+      .orderBy(desc(orders.createdAt))
+      .limit(100);
 
     return NextResponse.json(data);
   } catch (error) {

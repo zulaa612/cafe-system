@@ -55,13 +55,13 @@ export default function OrdersManager() {
                     <div className="flex items-center gap-4">
                         <Link
                             href="/admin/products"
-                            className="text-sm font-medium text-white"
+                            className="rounded-xl bg-[#6d4936] px-5 py-3 text-white hover:bg-[#351200]"
                         >
                             Products
                         </Link>
                         <Link
                             href="/admin/reports"
-                            className="text-sm font-medium text-white ">
+                            className="rounded-xl bg-[#351200] px-4 py-3 text-sm font-medium text-white hover:bg-[#6d4936]">
                             Reports
                         </Link>
 
